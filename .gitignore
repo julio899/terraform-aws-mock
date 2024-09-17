@@ -1,2 +1,9 @@
 .secrests
 .env
+.terraform
+**/.terraform
+.terraform.lock*
+terraform.tfstate*
+run.sh
+**/run.sh
+**/env.tfvars
