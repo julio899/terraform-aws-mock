@@ -21,13 +21,13 @@ variable "github_token" {
   default     = "default_user"
 }
 
-variable "aws_access_key_id" {
+variable "AWS_ACCESS_KEY_ID" {
   description = "aws_access_key_id"
   type        = string
   default     = ""
 }
 
-variable "aws_secret_access_key" {
+variable "AWS_SECRET_ACCESS_KEY" {
   description = "aws_secret_access_key"
   type        = string
   default     = ""
@@ -37,4 +37,35 @@ variable "aws_region" {
   description = "aws_region"
   type        = string
   default     = "us-east-1"
+}
+
+variable "instance" {
+  description = "instance"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "TF_VAR_GITHUB_REPOSITORY" {
+  description = "TF_VAR_GITHUB_REPOSITORY"
+  type        = string
+  default     = "ng-front"
+}
+
+variable "TF_VAR_GITHUB_TOKEN" {
+  description = "TF_VAR_GITHUB_TOKEN"
+  type        = string
+  default     = ""
+}
+
+variable "TF_VAR_GITHUB_USER" {
+  description = "TF_VAR_GITHUB_USER"
+  type        = string
+  default     = "julio899"
+}
+
+
+variable "TF_VAR_GITHUB_WORKSPACE" {
+  description = "TF_VAR_GITHUB_WORKSPACE"
+  type        = string
+  default     = "techneogaleno"
 }

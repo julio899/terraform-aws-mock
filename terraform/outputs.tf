@@ -3,22 +3,22 @@ output "github_user_value" {
   description = "El nombre de usuario de GitHub"
   value       = var.github_user
 }
-
+/*
 output "github_token" {
   description = "github_token"
   value       = var.github_token
 }
 
-output "aws_access_key_id" {
-  description = "aws_access_key_id"
-  value       = var.aws_access_key_id
+output "AWS_ACCESS_KEY_ID" {
+  description = "AWS_ACCESS_KEY_ID"
+  value       = var.AWS_ACCESS_KEY_ID
 }
 
-output "aws_secret_access_key" {
-  description = "aws_secret_access_key"
-  value       = var.aws_secret_access_key
+output "AWS_SECRET_ACCESS_KEY" {
+  description = "AWS_SECRET_ACCESS_KEY"
+  value       = var.AWS_SECRET_ACCESS_KEY
 }
-
+*/
 output "aws_region" {
   description = "aws_region"
   value       = var.aws_region

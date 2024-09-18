@@ -66,24 +66,24 @@
 
 
 # Crear la instancia EC2
-resource "aws_instance" "builder" {
-  ami                    = "ami-08c40ec9ead489470"
+resource "aws_instance" "builder1" {
+  ami                    = "ami-0d908d8876d2dafbd"
+  instance_type          = var.instance
   # ami-0f0417a092a64beee
-  instance_type          = "t2.micro"
   # subnet_id              = aws_subnet.main_subnet.id
   # vpc_security_group_ids = [aws_security_group.ssh_access.id]
-  associate_public_ip_address = true
-  key_name = "aws_instance_builder"
-  # aws_key_pair.deployer.key_name
+  # associate_public_ip_address = true
+  # key_name = aws_key_pair.deployer.key_name
 
-  iam_instance_profile = "aws_iam_instance_profile.ec2_profile.name"
+  # iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
-  tags = {
-    Name = "docker-builder"
-  }
+  #tags = {
+  #  Name = "docker-builder"
+  #}
 
+/*  
   # Provisión remota en la instancia EC2
-  provisioner "remote-exec" {
+ provisioner "remote-exec" {
   inline = [
       "sudo yum update -y",
       "sudo amazon-linux-extras install docker -y",
@@ -102,4 +102,5 @@ resource "aws_instance" "builder" {
       host        = self.public_ip
     }
   }
+   */
 }
