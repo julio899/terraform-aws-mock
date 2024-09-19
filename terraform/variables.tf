@@ -45,6 +45,12 @@ variable "instance" {
   default     = "t2.micro"
 }
 
+variable "ami" {
+  description = "ami"
+  type        = string
+  default     = "ami-0e86e20dae9224db8"
+}
+
 variable "TF_VAR_GITHUB_REPOSITORY" {
   description = "TF_VAR_GITHUB_REPOSITORY"
   type        = string

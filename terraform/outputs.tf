@@ -23,3 +23,10 @@ output "aws_region" {
   description = "aws_region"
   value       = var.aws_region
 }
+
+
+output "aws_key_pair" {
+  description = "aws_key_pair key_name"
+  value       = aws_key_pair.deployer.key_name
+}
+
