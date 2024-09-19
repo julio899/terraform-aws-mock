@@ -51,9 +51,9 @@ resource "aws_instance" "stg" {
   # Provisión remota en la instancia EC2
  provisioner "remote-exec" {
   inline = [
-      "sudo apt update -y",
-      "sudo apt-get install ca-certificates curl nano git",
-      "sudo docker -v",
+      "uname -a",
+      "docker -v",
+      "docker-compose --version"
       // "$(aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${aws_ecr_repository.my_repo.repository_url})",
       // "git clone https://${var.github_user}:${var.github_token}@github.com/${var.GITHUB_WORKSPACE}/${var.GITHUB_REPOSITORY} && cd ${var.GITHUB_REPOSITORY}/",
       // "sudo docker build -t my-docker-repo .",
