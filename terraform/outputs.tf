@@ -30,3 +30,26 @@ output "aws_key_pair" {
   value       = aws_key_pair.deployer.key_name
 }
 
+
+output "allocation_id" {
+  description = "la Elastic IP a la instancia EC2 allocation_id"
+  value       = aws_eip_association.eip_assoc.allocation_id
+}
+
+output "instance_id" {
+  description = "la Elastic IP a la instancia EC2 instance_id"
+  value       = aws_eip_association.eip_assoc.instance_id
+}
+
+
+# # Output para verificar el repositorio usado
+# output "repository_url" {
+#   description = "repositorio ecr usado"
+#   value = coalesce( data.aws_ecr_repository.neogaleno.repository_url, aws_ecr_repository.neogaleno_repo.repository_url)
+# }
+
+# # Output para generar dinámicamente el comando de Docker login
+# output "docker_login_command" {
+#   value = "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${coalesce(data.aws_ecr_repository.neogaleno.repository_url, aws_ecr_repository.neogaleno_repo[0].repository_url)}:latest"
+#   // "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${coalesce(data.aws_ecr_repository.neogaleno.repository_url, aws_ecr_repository.neogaleno_repo.repository_url)}"
+# }

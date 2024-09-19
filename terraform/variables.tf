@@ -16,9 +16,9 @@ variable "github_repository" {
 }
 
 variable "github_token" {
-  description = "token de GitHub"
+  description = "access token de GitHub"
   type        = string
-  default     = "default_user"
+  default     = ""
 }
 
 variable "AWS_ACCESS_KEY_ID" {
@@ -80,4 +80,10 @@ variable "TF_VAR_GITHUB_WORKSPACE" {
   description = "TF_VAR_GITHUB_WORKSPACE"
   type        = string
   default     = ""
+}
+
+variable "aws_ecr_repo_name" {
+  description = "aws_ecr_repo_name"
+  type        = string
+  default     = "neogaleno"
 }
