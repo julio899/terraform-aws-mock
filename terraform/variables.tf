@@ -51,6 +51,12 @@ variable "ami" {
   default     = "ami-0e86e20dae9224db8"
 }
 
+variable "aws_ssh_user" {
+  description = "aws_ssh_user"
+  type        = string
+  default     = "ubuntu"
+}
+
 variable "TF_VAR_GITHUB_REPOSITORY" {
   description = "TF_VAR_GITHUB_REPOSITORY"
   type        = string

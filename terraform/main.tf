@@ -1,5 +1,5 @@
-resource "aws_iam_role" "test_role" {
-  name = "test_role"
+resource "aws_iam_role" "stg_role" {
+  name = "stg_role"
 
   assume_role_policy = <<EOF
 {
@@ -23,7 +23,7 @@ EOF
 }
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2_profile"
-  role = "${aws_iam_role.test_role.name}"
+  role = "${aws_iam_role.stg_role.name}"
 }
 
 # Crear la instancia EC2
@@ -67,7 +67,7 @@ resource "aws_instance" "stg" {
     ]
     connection {
       type        = "ssh"
-      user        = "ec2-user"
+      user        = var.aws_ssh_user
       private_key = tls_private_key.key.private_key_pem
       host        = self.public_ip
     }

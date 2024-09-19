@@ -11,6 +11,7 @@
     aws_region = "us-east-1"
     instance = "t2.micro"
     # ubuntu oficial
+    aws_ssh_user = "ubuntu"
     ami = "ami-0e86e20dae9224db8"
     AWS_ACCESS_KEY_ID = "SOME"
     AWS_SECRET_ACCESS_KEY = "SOME_SECRET"

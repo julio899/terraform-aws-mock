@@ -7,3 +7,4 @@ terraform.tfstate*
 run.sh
 **/run.sh
 **/env.tfvars
+**.terraform.tfstate.lock.info
