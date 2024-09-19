@@ -31,6 +31,7 @@
 
 # corrida de apply
     terraform apply -var-file=env.tfvars -auto-approve
+    terraform apply -var-file=env.tfvars -auto-approve -destroy
 
 # destroy
     terraform destroy -var-file=env.tfvars -auto-approve

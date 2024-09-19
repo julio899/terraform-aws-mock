@@ -1,85 +1,3 @@
-resource "aws_iam_role" "stg_role" {
-  name = "stg_role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-
-  tags = {
-      tag-key = "tag-value-ec2"
-  }
-}
-
-
-# Adjuntar una política inline al rol que permite interacciones con ECR
-resource "aws_iam_role_policy" "ecr_permissions" {
-  name = "ecr_permissions"
-  role = aws_iam_role.stg_role.id
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "ecr:DescribeImages",
-        "ecr:GetAuthorizationToken",
-        "ecr:ListImages"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-
-
-# # Intentar obtener un repositorio existente con el nombre "neogaleno"
-# data "aws_ecr_repository" "neogaleno" {
-#   name = var.aws_ecr_repo_name  
-# }
-
-# # Crear el repositorio si no existe
-# resource "aws_ecr_repository" "neogaleno_repo" {
-#   count = length(data.aws_ecr_repository.neogaleno.id) == 0 ? 1 : 0  # Solo crear si no existe
-#   name  =  var.aws_ecr_repo_name
-
-#   tags = {
-#     Name = var.aws_ecr_repo_name
-#   }
-# }
-
-
-# Crear el repositorio (si no existe, no habrá errores)
-resource "aws_ecr_repository" "neogaleno_repo" {
-  name = var.aws_ecr_repo_name
-
-  tags = {
-    Name = var.aws_ecr_repo_name
-  }
-}
-
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "ec2_profile"
-  role = "${aws_iam_role.stg_role.name}"
-}
-
 # Crear la instancia EC2
 resource "aws_instance" "stg" {
   ami                    = var.ami
@@ -114,9 +32,9 @@ resource "aws_instance" "stg" {
       "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${aws_ecr_repository.neogaleno_repo.repository_url}",
       
       # Clonar repositorio y construir imagen Docker
-      "git clone https://${var.github_user}:${var.github_token}@github.com/${var.github_workspace}/${var.github_repository}.git && sudo ls ${var.github_repository}/",
-      "sudo $PWD",
-     
+      "git clone https://${var.github_user}:${var.github_token}@github.com/${var.github_workspace}/${var.github_repository}.git",
+      "echo $PWD",
+      "ls ${var.github_repository}/",
       // "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${coalesce(data.aws_ecr_repository.neogaleno.repository_url, aws_ecr_repository.neogaleno_repo[count.index].repository_url)}:latest",
       // "$(aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${aws_ecr_repository.my_repo.repository_url})",
       // "git clone https://${var.github_user}:${var.github_token}@github.com/${var.GITHUB_WORKSPACE}/${var.GITHUB_REPOSITORY} && cd ${var.GITHUB_REPOSITORY}/",
@@ -133,8 +51,9 @@ resource "aws_instance" "stg" {
   }
 }
 
-
-# Asociar la Elastic IP a la instancia EC2
+# # # # # # # # # # # # # # # # # # # # # # # 
+# Asociar la Elastic IP a la instancia EC2  #
+# # # # # # # # # # # # # # # # # # # # # # # 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.stg.id    # ID de la instancia EC2
   allocation_id = aws_eip.elastic_ip.id  # ID de la Elastic IP

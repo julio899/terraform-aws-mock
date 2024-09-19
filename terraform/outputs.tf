@@ -42,6 +42,12 @@ output "instance_id" {
 }
 
 
+output "repository_url" {
+  description = "ecr repository_url"
+  value       = aws_ecr_repository.neogaleno_repo.repository_url
+}
+
+
 # # Output para verificar el repositorio usado
 # output "repository_url" {
 #   description = "repositorio ecr usado"
