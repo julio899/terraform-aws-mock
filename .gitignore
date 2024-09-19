@@ -8,3 +8,4 @@ run.sh
 **/run.sh
 **/env.tfvars
 **.terraform.tfstate.lock.info
+errors.log
