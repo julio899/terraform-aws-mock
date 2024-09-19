@@ -69,3 +69,10 @@ resource "aws_instance" "stg" {
     }
   }
 }
+
+
+# Asociar la Elastic IP a la instancia EC2
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.stg.id    # ID de la instancia EC2
+  allocation_id = aws_eip.elastic_ip.id  # ID de la Elastic IP
+}
