@@ -60,7 +60,7 @@ variable "aws_ssh_user" {
 variable "TF_VAR_GITHUB_REPOSITORY" {
   description = "TF_VAR_GITHUB_REPOSITORY"
   type        = string
-  default     = "ng-front"
+  default     = ""
 }
 
 variable "TF_VAR_GITHUB_TOKEN" {
@@ -72,12 +72,12 @@ variable "TF_VAR_GITHUB_TOKEN" {
 variable "TF_VAR_GITHUB_USER" {
   description = "TF_VAR_GITHUB_USER"
   type        = string
-  default     = "julio899"
+  default     = ""
 }
 
 
 variable "TF_VAR_GITHUB_WORKSPACE" {
   description = "TF_VAR_GITHUB_WORKSPACE"
   type        = string
-  default     = "techneogaleno"
+  default     = ""
 }
