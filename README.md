@@ -31,7 +31,27 @@
 
 # corrida de apply
     terraform apply -var-file=env.tfvars -auto-approve
+
+# apply & destruye al finalizar
     terraform apply -var-file=env.tfvars -auto-approve -destroy
 
 # destroy
     terraform destroy -var-file=env.tfvars -auto-approve
+
+
+# We explicitly prevent destruction using terraform. 
+  lifecycle {
+    prevent_destroy = true
+  }
+
+
+# docker aplicado de tag a una imagen
+docker tag hello-world:latest 1010101010.dkr.ecr.us-east-1.amazonaws.com/neo__
+
+# configurar CLI de aws
+aws configure
+
+$(aws ecr get-login --region us-east-1)
+aws ecr get-login-password | docker login --username AWS --password-stdin 202***551.dkr.ecr.us-east-1.amazonaws.com
+
+docker login -u AWS -p $(aws ecr get-login-password --region us-east-1) xxxxxxxx.dkr.ecr.us-east-1.amazonaws.com
