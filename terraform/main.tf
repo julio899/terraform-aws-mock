@@ -53,7 +53,8 @@ resource "aws_instance" "stg" {
   inline = [
       "uname -a",
       "docker -v",
-      "docker-compose --version"
+      "docker-compose --version",
+      "git --version",
       // "$(aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${aws_ecr_repository.my_repo.repository_url})",
       // "git clone https://${var.github_user}:${var.github_token}@github.com/${var.GITHUB_WORKSPACE}/${var.GITHUB_REPOSITORY} && cd ${var.GITHUB_REPOSITORY}/",
       // "sudo docker build -t my-docker-repo .",
