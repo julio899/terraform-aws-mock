@@ -43,21 +43,32 @@ output "instance_id" {
 
 
 output "repository_url" {
-  description = "ecr repository_url"
-  value       = aws_ecr_repository.neogaleno_repo.repository_url
+  description = "ecr repository url"
+  value       = "${var.aws_ecr_repo_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
+  # aws_ecr_repository.neogaleno_repo.repository_url
+}
+
+
+output "IP STG" {
+  description = "stg ip aws_eip_association"
+  value       = aws_eip_association.eip_assoc.public_ip
+  # aws_ecr_repository.neogaleno_repo.repository_url
 }
 
 
 
-output "neogaleno_repo_id" {
-  description = "ecr id"
-  value       = aws_ecr_repository.neogaleno_repo.id
+
+output "aws_ecr_repo_name" {
+  description = "ecr name"
+  value       = var.aws_ecr_repo_name
+  # aws_ecr_repository.neogaleno_repo.id
 }
 
 
-output "registry_id" {
-  description = "ecr registry_id"
-  value       = aws_ecr_repository.neogaleno_repo.registry_id
+output "aws_ecr_repo_id" {
+  description = "ecr registry id"
+  value       = var.aws_ecr_repo_id
+  # aws_ecr_repository.neogaleno_repo.registry_id
 }
 
 

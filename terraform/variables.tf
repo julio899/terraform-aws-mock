@@ -89,6 +89,13 @@ variable "aws_ecr_repo_name" {
 }
 
 
+variable "aws_ecr_repo_id" {
+  description = "aws_ecr_repo_id creado previamiente en ecr id del repo"
+  type        = string
+  default     = ""
+}
+
+
 # # # # # # # # 
 # FRONT - ENV #
 # # # # # # # # 
