@@ -87,3 +87,94 @@ variable "aws_ecr_repo_name" {
   type        = string
   default     = "neogaleno"
 }
+
+
+# # # # # # # # 
+# FRONT - ENV #
+# # # # # # # # 
+variable "FRONT_ENVIROMENT" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_NODE_ENV" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_MIXPANEL_KEY" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_NG_AWS_ACCESS_KEY" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_NG_AWS_SECRET_KEY" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_NG_AWS_BUCKET" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_NG_AWS_REGION" {
+  type        = string
+  default     = ""
+}
+
+variable "FRONT_NG_AWS_S3_URL" {
+  type        = string
+  default     = ""
+}
+
+variable "FRONT_SENTRY_DNS" {
+  type        = string
+  default     = ""
+}
+
+variable "FRONT_STRIPE_BILLING_URL" {
+  type        = string
+  default     = ""
+}
+
+variable "FRONT_VUE_APP_BACKEND_DOMAIN" {
+  type        = string
+  default     = ""
+}
+
+variable "FRONT_VUE_APP_LANDING_DOMAIN" {
+  type        = string
+  default     = ""
+}
+
+variable "FRONT_CORS" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_PORT" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_API_VERSION" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_DEMO_USER" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_DEMO_USER_PASS" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_SERVER_IP" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_SERVER_USER" {
+  type        = string
+  default     = ""
+}
+variable "FRONT_SERVER_CERT_SSH" {
+  type        = string
+  default     = ""
+}
