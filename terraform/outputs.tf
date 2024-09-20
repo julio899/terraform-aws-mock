@@ -48,6 +48,19 @@ output "repository_url" {
 }
 
 
+
+output "neogaleno_repo_id" {
+  description = "ecr id"
+  value       = aws_ecr_repository.neogaleno_repo.id
+}
+
+
+output "registry_id" {
+  description = "ecr registry_id"
+  value       = aws_ecr_repository.neogaleno_repo.registry_id
+}
+
+
 # # Output para verificar el repositorio usado
 # output "repository_url" {
 #   description = "repositorio ecr usado"

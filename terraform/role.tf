@@ -39,7 +39,12 @@ resource "aws_iam_role_policy" "ecr_permissions" {
         "ecr:BatchGetImage",
         "ecr:DescribeImages",
         "ecr:GetAuthorizationToken",
-        "ecr:ListImages"
+        "ecr:ListImages",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:CompleteLayerUpload",
+        "ecr:InitiateLayerUpload",
+        "ecr:PutImage",
+        "ecr:UploadLayerPart"
       ],
       "Resource": "*"
     }
