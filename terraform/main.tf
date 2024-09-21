@@ -6,7 +6,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 # Crear la instancia EC2
 resource "aws_instance" "stg" {
   ami           = var.ami
-  instance_type = var.instance  
+  instance_type = var.instance
 
   # importing EC2 Key Pair (ng-front-key): operation error EC2: ImportKeyPair, https response error StatusCode: 400
   key_name = aws_key_pair.deployer.key_name
@@ -101,7 +101,7 @@ resource "local_file" "private_key" {
 # Asociar la Elastic IP a la instancia EC2  #
 # # # # # # # # # # # # # # # # # # # # # # # 
 resource "aws_eip_association" "eip_assoc" {
-  instance_id   = aws_instance.stg.id   # ID de la instancia EC2
+  instance_id   = aws_instance.stg.id     # ID de la instancia EC2
   allocation_id = var.aws_ip_stg_eipalloc # IP estatica previamente creada
   # aws_eip.elastic_ip.id # ID de la Elastic IP # in network.tf (nueva)
 }

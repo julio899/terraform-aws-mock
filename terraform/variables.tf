@@ -194,5 +194,5 @@ variable "aws_ip_stg" {
 # Asume que ya tienes una Elastic IP existente con ID "eipalloc-xxxxxxxx"
 variable "aws_ip_stg_eipalloc" {
   type    = string
-  default = "eipalloc-xxxxxxxx"  # Coloca aquí tu EIP ID
+  default = "eipalloc-xxxxxxxx" # Coloca aquí tu EIP ID
 }
