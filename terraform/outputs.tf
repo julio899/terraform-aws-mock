@@ -49,7 +49,7 @@ output "repository_url" {
 }
 
 
-output "IP STG" {
+output "ip_stg" {
   description = "stg ip aws_eip_association"
   value       = aws_eip_association.eip_assoc.public_ip
   # aws_ecr_repository.neogaleno_repo.repository_url

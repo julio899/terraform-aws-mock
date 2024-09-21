@@ -18,7 +18,7 @@ resource "aws_iam_role" "stg_role" {
 EOF
 
   tags = {
-      tag-key = "tag-value-ec2"
+    tag-key = "tag-value-ec2"
   }
 }
 
