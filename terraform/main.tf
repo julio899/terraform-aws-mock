@@ -1,11 +1,7 @@
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2_profile"
-  role = "${aws_iam_role.stg_role.name}"
+  role = aws_iam_role.stg_role.name
 }
-# Incluir el módulo de ECR
-# module "ECR" {
-#  source = "./ECR"
-# }
 
 # Crear la instancia EC2
 resource "aws_instance" "stg" {
@@ -92,8 +88,8 @@ resource "aws_instance" "stg" {
 
 # Guardar la clave privada en una carpeta local "keypairs"
 resource "local_file" "private_key" {
-  filename        = "${path.module}/keypairs/${aws_instance.stg.key_name}_keypair.pem"
-  content         = tls_private_key.key.private_key_pem
+  filename = "${path.module}/keypairs/${aws_instance.stg.key_name}_keypair.pem"
+  content  = tls_private_key.key.private_key_pem
   # tls_private_key.ec2_key.private_key_pem
   file_permission = "0400" # Solo lectura para el propietario
 }
