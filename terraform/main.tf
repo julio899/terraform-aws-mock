@@ -1,6 +1,10 @@
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ec2_profile"
+  role = "${aws_iam_role.stg_role.name}"
+}
 # Incluir el módulo de ECR
 # module "ECR" {
-#   source = "./ecr"
+#  source = "./ECR"
 # }
 
 # Crear la instancia EC2
@@ -24,7 +28,7 @@ resource "aws_instance" "stg" {
   vpc_security_group_ids = [aws_security_group.ssh_access.id]
 
   # DEPENDE DE ecr.tf
-  # iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
   # Provisión remota en la instancia EC2
   provisioner "remote-exec" {
