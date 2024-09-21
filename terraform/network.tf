@@ -98,12 +98,13 @@ resource "aws_security_group" "ssh_access" {
 
 
 # Crear y asignar una Elastic IP
-resource "aws_eip" "elastic_ip" {
-  # vpc = true
-  domain = "vpc"
-  # associated with an instance
-  # instance = aws_instance.web.id
-  tags = {
-    Name = "WebServerElasticIP"
-  }
-}
+# resource "aws_eip" "elastic_ip" {
+#   # vpc = true
+#   domain = "vpc"
+#   # associated with an instance
+#   # instance = aws_instance.web.id
+#   public_ipv4_pool = var.aws_ip_stg  
+#   tags = {
+#     Name = "WebServerElasticIP"
+#   }
+# }
