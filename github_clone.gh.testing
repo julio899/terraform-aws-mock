@@ -1,0 +1,12 @@
+provider "github" {
+  token        = var.github_token
+  organization = "techneogaleno"
+  base_url = "github.com/${var.github_workspace}/${var.github_repository}.git"
+}
+
+data "github_repository" "front" {
+  full_name = "${var.github_workspace}/${var.github_repository}"
+}
+
+# download Github provider. Then run
+# terraform show -json | jq -r '.values.root_module.resources[0].values.http_clone_url'
