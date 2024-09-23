@@ -9,4 +9,6 @@ run.sh
 **/env.tfvars
 **.terraform.tfstate.lock.info
 errors.log
-terraform/keypairs/*.pem
+**.pem
+docker/nginx/letsencrypt/live/
+**.tar.gz
