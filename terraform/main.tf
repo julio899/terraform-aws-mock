@@ -5,8 +5,8 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 
 # Crear la instancia EC2
 resource "aws_instance" "stg" {
-  ami           = var.ami
-  instance_type = var.instance
+  ami           = var.AMI
+  instance_type = var.INSTANCE
 
   # importing EC2 Key Pair (ng-front-key): operation error EC2: ImportKeyPair, https response error StatusCode: 400
   key_name = aws_key_pair.deployer.key_name
@@ -40,8 +40,8 @@ resource "aws_instance" "stg" {
       "ls",
       # string name - aws_ecr_repository.neogaleno_repo.id
       # numeric aws_ecr_repository.neogaleno_repo.registry_id
-      "echo ${var.aws_ecr_repo_name} * ecr aws_ecr_repo_name",
-      "echo ${var.aws_ecr_repo_id} * ecr registry_id",
+      "echo ${var.AWS_ECR_REPO_NAME} * ecr aws_ecr_repo_name",
+      "echo ${var.AWS_ECR_REPO_ID} * ecr registry_id",
       # docker
       "docker network create -d bridge app_stg",
       "docker network ls",
@@ -49,11 +49,11 @@ resource "aws_instance" "stg" {
       # -----------------------------
       # SYNC Last Vertions ECR images
       # -----------------------------
-      "export AWS_ACCESS_KEY_ID=${var.FRONT_NG_AWS_ACCESS_KEY} && export AWS_SECRET_ACCESS_KEY=${var.FRONT_NG_AWS_SECRET_KEY} && export AWS_DEFAULT_REGION=us-east-1 && aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${var.aws_ecr_repo_id}.dkr.ecr.us-east-1.amazonaws.com",
-      "aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${var.aws_ecr_repo_id}.dkr.ecr.${var.aws_region}.amazonaws.com",
-      "docker pull ${var.aws_ecr_repo_id}.dkr.ecr.us-east-1.amazonaws.com/neogaleno:latest",
+      "export AWS_ACCESS_KEY_ID=${var.FRONT_NG_AWS_ACCESS_KEY} && export AWS_SECRET_ACCESS_KEY=${var.FRONT_NG_AWS_SECRET_KEY} && export AWS_DEFAULT_REGION=us-east-1 && aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com",
+      "aws ecr get-login-password --region ${var.AWS_REGION} | docker login --username AWS --password-stdin ${var.AWS_ECR_REPO_ID}.dkr.ecr.${var.AWS_REGION}.amazonaws.com",
+      "docker pull ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/neogaleno:latest",
       "sleep 1",
-      "docker pull ${var.aws_ecr_repo_id}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
+      "docker pull ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
 
 
       # -----------------------------
@@ -64,7 +64,7 @@ resource "aws_instance" "stg" {
       # generate .env 
       # "(echo \"ENVIROMENT=${var.FRONT_ENVIROMENT}\"; echo \"NODE_ENV=${var.FRONT_NODE_ENV}\"; echo \"MIXPANEL_KEY=${var.FRONT_MIXPANEL_KEY}\"; echo \"NG_AWS_ACCESS_KEY=${var.FRONT_NG_AWS_ACCESS_KEY}\"; echo \"NG_AWS_SECRET_KEY=${var.FRONT_NG_AWS_SECRET_KEY}\"; echo \"NG_AWS_BUCKET=${var.FRONT_NG_AWS_BUCKET}\"; echo \"NG_AWS_REGION=${var.FRONT_NG_AWS_REGION}\"; echo \"NG_AWS_S3_URL=${var.FRONT_NG_AWS_S3_URL}\"; echo \"SENTRY_DNS=${var.FRONT_SENTRY_DNS}\"; echo \"STRIPE_BILLING_URL=${var.FRONT_STRIPE_BILLING_URL}\"; echo \"VUE_APP_BACKEND_DOMAIN=${var.FRONT_VUE_APP_BACKEND_DOMAIN}\"; echo \"VUE_APP_LANDING_DOMAIN=${var.FRONT_VUE_APP_LANDING_DOMAIN}\"; echo \"CORS=${var.FRONT_CORS}\"; echo \"PORT=${var.FRONT_PORT}\"; echo \"API_VERSION=${var.FRONT_API_VERSION}\"; echo \"SERVER_CERT_SSH =${var.FRONT_SERVER_CERT_SSH}\"; echo \"DEMO_USER=${var.FRONT_DEMO_USER}\"; echo \"DEMO_USER_PASS=${var.FRONT_DEMO_USER_PASS}\"; echo \"SERVER_IP=${var.FRONT_SERVER_IP}\"; echo \"SERVER_USER=${var.FRONT_SERVER_USER}\") > .env",
       # "docker-compose -f docker-compose.yml up -d --build",
-      "docker run -it --rm --net app_stg -d -p 3030 --name front-stg ${var.aws_ecr_repo_id}.dkr.ecr.us-east-1.amazonaws.com/neogaleno:latest",
+      "docker run -it --rm --net app_stg -d -p 3030 --name front-stg ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/neogaleno:latest",
       "docker network connect app_stg front-stg",
       "sleep 1",
       # <<<<<<<<< FRONT <<<<<<<<<<<
@@ -74,7 +74,7 @@ resource "aws_instance" "stg" {
       # PROXY -----------------------
       "sleep 1",
       "sleep 1",
-      "docker run -it --link front-stg:front-stg --net app_stg -d -p 80:80 -p 443:443 --name proxy-ng ${var.aws_ecr_repo_id}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
+      "docker run -it --link front-stg:front-stg --net app_stg -d -p 80:80 -p 443:443 --name proxy-ng ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
       "sleep 1",
       # local "docker run -it --rm --link front-stg:front-stg --net app_stg -d -p 80:80 -p 443:443 --name proxy-ng nginx",
       # Run rutine ssl
@@ -87,7 +87,7 @@ resource "aws_instance" "stg" {
     ]
     connection {
       type        = "ssh"
-      user        = var.aws_ssh_user
+      user        = var.AWS_SSH_USER
       private_key = tls_private_key.key.private_key_pem
       host        = self.public_ip
     }
@@ -107,6 +107,6 @@ resource "local_file" "private_key" {
 # # # # # # # # # # # # # # # # # # # # # # # 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.stg.id     # ID de la instancia EC2
-  allocation_id = var.aws_ip_stg_eipalloc # IP estatica previamente creada
+  allocation_id = var.AWS_IP_STG_EIPALLOC # IP estatica previamente creada
   # aws_eip.elastic_ip.id # ID de la Elastic IP # in network.tf (nueva)
 }

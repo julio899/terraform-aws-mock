@@ -1,21 +1,21 @@
 # Definición de la variable (puede estar en variables.tf)
-variable "github_user" {
+variable "GITHUB_USER" {
   description = "usuario de GitHub"
   type        = string
   default     = "default_user"
 }
-variable "github_workspace" {
+variable "GITHUB_WORKSPACE" {
   description = "workspace de GitHub"
   type        = string
   default     = ""
 }
-variable "github_repository" {
+variable "GITHUB_REPOSITORY" {
   description = "repository de GitHub"
   type        = string
   default     = ""
 }
 
-variable "github_token" {
+variable "GITHUB_TOKEN" {
   description = "access token de GitHub"
   type        = string
   default     = ""
@@ -33,25 +33,25 @@ variable "AWS_SECRET_ACCESS_KEY" {
   default     = ""
 }
 
-variable "aws_region" {
+variable "AWS_REGION" {
   description = "aws_region"
   type        = string
   default     = "us-east-1"
 }
 
-variable "instance" {
+variable "INSTANCE" {
   description = "instance"
   type        = string
   default     = "t2.micro"
 }
 
-variable "ami" {
+variable "AMI" {
   description = "ami"
   type        = string
   default     = "ami-0e86e20dae9224db8"
 }
 
-variable "aws_ssh_user" {
+variable "AWS_SSH_USER" {
   description = "aws_ssh_user"
   type        = string
   default     = "ubuntu"
@@ -82,14 +82,14 @@ variable "TF_VAR_GITHUB_WORKSPACE" {
   default     = ""
 }
 
-variable "aws_ecr_repo_name" {
+variable "AWS_ECR_REPO_NAME" {
   description = "aws_ecr_repo_name"
   type        = string
   default     = "neogaleno"
 }
 
 
-variable "aws_ecr_repo_id" {
+variable "AWS_ECR_REPO_ID" {
   description = "aws_ecr_repo_id creado previamiente en ecr id del repo"
   type        = string
   default     = ""
@@ -186,13 +186,13 @@ variable "FRONT_SERVER_CERT_SSH" {
   default = ""
 }
 
-variable "aws_ip_stg" {
+variable "AWS_IP_STG" {
   type    = string
   default = ""
 }
 
 # Asume que ya tienes una Elastic IP existente con ID "eipalloc-xxxxxxxx"
-variable "aws_ip_stg_eipalloc" {
+variable "AWS_IP_STG_EIPALLOC" {
   type    = string
   default = "eipalloc-xxxxxxxx" # Coloca aquí tu EIP ID
 }

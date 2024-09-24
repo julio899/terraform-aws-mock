@@ -1,7 +1,7 @@
 # Output para imprimir la variable github_user
 output "github_user_value" {
   description = "El nombre de usuario de GitHub"
-  value       = var.github_user
+  value       = var.GITHUB_USER
 }
 /*
 output "github_token" {
@@ -21,7 +21,7 @@ output "AWS_SECRET_ACCESS_KEY" {
 */
 output "aws_region" {
   description = "aws_region"
-  value       = var.aws_region
+  value       = var.AWS_REGION
 }
 
 
@@ -44,7 +44,7 @@ output "instance_id" {
 
 output "repository_url" {
   description = "ecr repository url"
-  value       = "${var.aws_ecr_repo_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
+  value       = "${var.AWS_ECR_REPO_ID}.dkr.ecr.${var.AWS_REGION}.amazonaws.com"
   # aws_ecr_repository.neogaleno_repo.repository_url
 }
 
@@ -60,14 +60,14 @@ output "ip_stg" {
 
 output "aws_ecr_repo_name" {
   description = "ecr name"
-  value       = var.aws_ecr_repo_name
+  value       = var.AWS_ECR_REPO_NAME
   # aws_ecr_repository.neogaleno_repo.id
 }
 
 
 output "aws_ecr_repo_id" {
   description = "ecr registry id"
-  value       = var.aws_ecr_repo_id
+  value       = var.AWS_ECR_REPO_ID
   # aws_ecr_repository.neogaleno_repo.registry_id
 }
 
