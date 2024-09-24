@@ -36,8 +36,7 @@ resource "aws_instance" "stg" {
 
       "echo \"export AWS_ACCESS_KEY_ID=${var.AWS_ACCESS_KEY_ID} && export AWS_SECRET_ACCESS_KEY=${var.AWS_SECRET_ACCESS_KEY} && export AWS_DEFAULT_REGION=us-east-1 && aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 202533523551.dkr.ecr.us-east-1.amazonaws.com\" >> ~/.profile",
       "source ~/.profile",
-      # "echo repository_url ${aws_ecr_repository.neogaleno_repo.repository_url}:latest",
-      # Clonar repositorio y construir imagen Docker
+
       "echo $PWD",
       "ls",
       # string name - aws_ecr_repository.neogaleno_repo.id
@@ -51,9 +50,9 @@ resource "aws_instance" "stg" {
       # -----------------------------
       # SYNC Last Vertions ECR images
       # -----------------------------
-      # "export AWS_ACCESS_KEY_ID=${var.FRONT_NG_AWS_ACCESS_KEY} && export AWS_SECRET_ACCESS_KEY=${var.FRONT_NG_AWS_SECRET_KEY} && export AWS_DEFAULT_REGION=us-east-1 && aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com",
       "aws ecr get-login-password --region ${var.AWS_REGION} | docker login --username AWS --password-stdin ${var.AWS_ECR_REPO_ID}.dkr.ecr.${var.AWS_REGION}.amazonaws.com",
       "docker pull ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/neogaleno:latest",
+      "docker pull ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
 
       # -----------------------------
       # FRONT -----------------------
@@ -65,20 +64,8 @@ resource "aws_instance" "stg" {
 
 
       # PROXY -----------------------
-      "aws ecr get-login-password --region ${var.AWS_REGION} | docker login --username AWS --password-stdin ${var.AWS_ECR_REPO_ID}.dkr.ecr.${var.AWS_REGION}.amazonaws.com",
-      "sleep 1",
-      "docker pull ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
-      "sleep 1",
       "docker run -it --link front-stg:front-stg --net app_stg -d -p 80:80 -p 443:443 --name proxy-ng ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
-      "sleep 1",
-      # local "docker run -it --rm --link front-stg:front-stg --net app_stg -d -p 80:80 -p 443:443 --name proxy-ng nginx",
-      # Run rutine ssl
-      # "docker exec -i proxy-ng nginx-generate-config-domains",
-      # "sleep 1",
       "docker ps --format '{{.Names}}'",
-      "echo 'Finish...'",
-
-
     ]
     connection {
       type        = "ssh"
