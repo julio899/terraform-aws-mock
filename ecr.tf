@@ -38,10 +38,11 @@
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2_profile"
   role = "${aws_iam_role.stg_role.name}"
-
+  /*
   lifecycle {
     prevent_destroy = true
   }
+  */
 
 }
 
