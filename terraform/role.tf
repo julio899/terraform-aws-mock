@@ -18,16 +18,15 @@ resource "aws_iam_role" "stg_role" {
 EOF
 
   tags = {
-    tag-key = "tag-value-ec2"
+    tag-key = "stg-role-ec2"
   }
 }
 
 
 # Adjuntar una política inline al rol que permite interacciones con ECR
 resource "aws_iam_role_policy" "ecr_permissions" {
-  name = "ecr_permissions"
-  role = aws_iam_role.stg_role.id
-
+  name   = "ecr_permissions"
+  role   = aws_iam_role.stg_role.id
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -47,8 +46,32 @@ resource "aws_iam_role_policy" "ecr_permissions" {
         "ecr:UploadLayerPart"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::ng-terraform-state",
+        "arn:aws:s3:::ng-terraform-state/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:UpdateItem"
+      ],
+      "Resource": "arn:aws:dynamodb:us-east-2:202533523551:table/terraform-lock-table"
     }
   ]
 }
+
 EOF
 }

@@ -24,19 +24,24 @@
     terraform init
         or
     terraform init -reconfigure 
+    terraform init -reconfigure -lock=false
+
+# reset stage 
+    terraform init -migrate-state
 
 
 # corrida compilacion de plan
-    terraform plan -var-file=env.tfvars
+    terraform plan -var-file=env.tfvars -refresh=true
 
 # corrida de apply
-    terraform apply -var-file=env.tfvars -auto-approve
+    terraform apply -var-file=env.tfvars -auto-approve -lock=false
 
 # apply & destruye al finalizar
     terraform apply -var-file=env.tfvars -auto-approve -destroy
 
 # destroy
-    terraform destroy -var-file=env.tfvars -auto-approve
+    terraform destroy -var-file=env.tfvars -auto-approve -refresh=true
+    terraform destroy -var-file=env.tfvars -auto-approve -lock=false
 
 
 - https://github.com/hashicorp/terraform/issues/17599#issuecomment-373557799
@@ -54,3 +59,8 @@ $(aws ecr get-login --region us-east-1)
 aws ecr get-login-password | docker login --username AWS --region us-east-1 --password-stdin 202***551.dkr.ecr.us-east-1.amazonaws.com
 
 docker login -u AWS -p $(aws ecr get-login-password --region us-east-1) xxxxxxxx.dkr.ecr.us-east-1.amazonaws.com
+
+
+# rol por aws y limpieza
+aws iam list-instance-profiles
+aws iam delete-instance-profile --instance-profile-name ec2_profile
