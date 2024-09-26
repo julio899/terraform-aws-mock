@@ -84,12 +84,12 @@ resource "aws_instance" "stg" {
 }
 
 # Guardar la clave privada en una carpeta local "keypairs"
-resource "local_file" "private_key" {
-  filename = "${path.module}/keypairs/${aws_instance.stg.key_name}.pem"
-  content  = tls_private_key.key.private_key_pem
-  # tls_private_key.ec2_key.private_key_pem
-  file_permission = "0400" # Solo lectura para el propietario
-}
+# resource "local_file" "private_key" {
+#   filename = "${path.module}/keypairs/${aws_instance.stg.key_name}.pem"
+#   content  = tls_private_key.key.private_key_pem
+#   # tls_private_key.ec2_key.private_key_pem
+#   file_permission = "0400" # Solo lectura para el propietario
+# }
 
 # # # # # # # # # # # # # # # # # # # # # # # 
 # Asociar la Elastic IP a la instancia EC2  #

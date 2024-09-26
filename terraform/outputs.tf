@@ -74,7 +74,8 @@ output "aws_ecr_repo_id" {
 
 output "ssh_conexion" {
   description = "ssh"
-  value       = "ssh -i keypairs/${aws_key_pair.deployer.key_name}.pem ubuntu@${var.AWS_IP_STG}"
+  # value       = "ssh -i keypairs/${aws_key_pair.deployer.key_name}.pem ubuntu@${var.AWS_IP_STG}"
+  value = "ssh -o StrictHostKeyChecking=no -i ~/.ssh/terraform ubuntu@${var.AWS_IP_STG}"
 }
 
 # # Output para verificar el repositorio usado
