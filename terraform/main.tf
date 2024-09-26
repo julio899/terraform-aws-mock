@@ -1,6 +1,9 @@
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2_profile"
   role = aws_iam_role.stg_role.name
+  lifecycle {
+    create_before_destroy = true # or false
+  }
 }
 
 # Crear la instancia EC2
@@ -64,12 +67,20 @@ resource "aws_instance" "stg" {
       "docker ps --format '{{.Names}}'",
     ]
     connection {
-      type        = "ssh"
-      user        = var.AWS_SSH_USER
-      private_key = tls_private_key.key.private_key_pem
-      host        = self.public_ip
+      type = "ssh"
+      user = var.AWS_SSH_USER
+      # oem private_key = tls_private_key.key.private_key_pem
+      host    = self.public_ip
+      port    = "22"
+      timeout = "1m"
+      # private_key = "${file("${var.key_location}")}"
+      # * private_key = file("pemfile-location.pem")
+      private_key = file("~/.ssh/terraform")
     }
   }
+  # key_location = "~/.ssh/id_ed25519"
+  # ssh -v -i <path_to_private_key/id_rsa> <USER_NAME>@<INSTANCE_IP>
+
 }
 
 # Guardar la clave privada en una carpeta local "keypairs"

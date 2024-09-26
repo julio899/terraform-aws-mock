@@ -95,6 +95,18 @@ variable "AWS_ECR_REPO_ID" {
   default     = ""
 }
 
+variable "SSH_TERRAFORM_PUBLIC_KEY" {
+  description = "SSH_TERRAFORM_PUBLIC_KEY ssh .pub"
+  type        = string
+  default     = ""
+}
+
+variable "SSH_TERRAFORM_PRIV_KEY" {
+  description = "SSH_TERRAFORM_PRIV_KEY ssh"
+  type        = string
+  default     = ""
+}
+
 
 # # # # # # # # 
 # FRONT - ENV #

@@ -87,24 +87,3 @@ resource "aws_security_group" "ssh_access" {
     Name = "ssh_access"
   }
 }
-
-/*
-  - https://github.com/hashicorp/terraform-provider-aws/issues/23625
-  
-  For those resources where we are now failing to create new resources without a configured vpc_id, 
-  but use of the AWS Region's default VPC in fact occurs (and is (or was) undocumented in the API 😄),
-  we will revert the changes and accept no configured vpc_id.
-*/
-
-
-# Crear y asignar una Elastic IP
-# resource "aws_eip" "elastic_ip" {
-#   # vpc = true
-#   domain = "vpc"
-#   # associated with an instance
-#   # instance = aws_instance.web.id
-#   public_ipv4_pool = var.aws_ip_stg  
-#   tags = {
-#     Name = "WebServerElasticIP"
-#   }
-# }
