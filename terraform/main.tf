@@ -12,7 +12,7 @@ resource "aws_instance" "stg" {
   instance_type = var.INSTANCE
 
   # importing EC2 Key Pair (ng-front-key): operation error EC2: ImportKeyPair, https response error StatusCode: 400
-  key_name = aws_key_pair.deployer.key_name
+  # key_name = aws_key_pair.deployer.key_name
 
   # Alternatively you could use the Terraform import command to import the pre-existing resource into your state file:
   # terraform import aws_key_pair.personal mschuchard-us-east
