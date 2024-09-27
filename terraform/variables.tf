@@ -203,6 +203,11 @@ variable "AWS_IP_STG" {
   default = ""
 }
 
+variable "AWS_VOLUME" {
+  type    = string
+  default = "" // vol-0exxxx78  
+}
+
 # Asume que ya tienes una Elastic IP existente con ID "eipalloc-xxxxxxxx"
 variable "AWS_IP_STG_EIPALLOC" {
   type    = string

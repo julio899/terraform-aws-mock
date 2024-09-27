@@ -87,9 +87,22 @@ sudo systemctl restart sshd
 # Limitar los métodos de autenticación en el servidor
 /etc/ssh/sshd_config
     PasswordAuthentication no
+    PubkeyAuthentication yes
 
 # Revisar los logs del servidor SSH
 sudo tail -f /var/log/auth.log
 
     en algunos sistemas (como CentOS o Amazon Linux):
     sudo tail -f /var/log/secure
+
+# To update the locked dependency selections to match a changed configuration, run:
+│   terraform init -upgrade
+
+
+  # Detener y eliminar el contenedor proxy-ng si ya está corriendo
+  "docker stop proxy-ng || true",   # Detiene el contenedor si existe
+  "docker rm proxy-ng || true",     # Elimina el contenedor si ya existe
+
+  # Borrado de todos los activos y limpiar todos los pausados
+    docker ps -q --filter "name=$name" | xargs -r docker stop
+    docker ps -aq --filter "name=$name" | xargs -r docker rm

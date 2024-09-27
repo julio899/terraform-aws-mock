@@ -43,12 +43,21 @@ resource "aws_instance" "stg" {
       "docker -v",
       "docker-compose --version",
       "git --version",
+
+      # config aws-cli
+      "mkdir -p ~/.aws/ && touch ~/.aws/credentials",
+      "echo '[default]' >> ~/.aws/credentials",
+      "echo 'aws_access_key_id=${var.AWS_ACCESS_KEY_ID}' >> ~/.aws/credentials",
+      "echo 'aws_secret_access_key=${var.AWS_SECRET_ACCESS_KEY}' >> ~/.aws/credentials",
+      "echo 'region=${var.AWS_REGION}' >> ~/.aws/credentials",
+      "aws configure set default.region ${var.AWS_REGION}",
+      "aws configure list",
       "aws --version",
 
+      
       "echo \"export AWS_ACCESS_KEY_ID=${var.AWS_ACCESS_KEY_ID} && export AWS_SECRET_ACCESS_KEY=${var.AWS_SECRET_ACCESS_KEY} && export AWS_DEFAULT_REGION=us-east-1 && aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 202533523551.dkr.ecr.us-east-1.amazonaws.com\" >> ~/.profile",
-      "source ~/.profile",
-      "echo $PWD",
-      "ls",
+      # "source ~/.profile",
+      ". ~/.profile",
       # docker crear red para contenedores y comunicacion en los puertos
       "docker network create -d bridge app_stg",
       "docker network ls",
@@ -67,12 +76,21 @@ resource "aws_instance" "stg" {
       # "docker network connect app_stg front-stg",
       # "sleep 1",
       # <<<<<<<<< FRONT <<<<<<<<<<<
-      # -----------------------------
-
+      # -----------------------------      
 
       # PROXY -----------------------
       "docker run -it --link front-stg:front-stg --net app_stg -d -p 80:80 -p 443:443 --name proxy-ng ${var.AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx:latest",
       "docker ps --format '{{.Names}}'",
+      
+      
+      " . ~/.profile",
+      "aws ecr get-login-password --region ${var.AWS_REGION} | docker login --username AWS --password-stdin ${var.AWS_ECR_REPO_ID}.dkr.ecr.${var.AWS_REGION}.amazonaws.com",
+      # mount Disk
+      "sudo mkdir -p /mnt/data",
+      "aws ec2 attach-volume --volume-id ${var.AWS_VOLUME} --instance-id ${self.id} --device /dev/sdf",
+      "sleep 3 && sudo mount /dev/nvme1n1 /mnt/data && sleep 1 && sudo echo '/dev/nvme1n1  /mnt/data  ext4  defaults,nofail  0  2' >> /etc/fstab",
+      "cat /mnt/data/status.txt || echo '/mnt/data/status.txt -  No encontrado'",
+      "lsblk",
     ]
     connection {
       type = "ssh"
@@ -80,7 +98,7 @@ resource "aws_instance" "stg" {
       # oem private_key = tls_private_key.key.private_key_pem
       host    = self.public_ip
       port    = "22"
-      timeout = "1m"
+      timeout = "2m"
       # private_key = "${file("${var.key_location}")}"
       # * private_key = file("pemfile-location.pem")
       private_key = file("~/.ssh/terraform")
