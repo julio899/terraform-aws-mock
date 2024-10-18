@@ -1,9 +1,43 @@
 # Definición de la variable (puede estar en variables.tf)
+variable "TAG_NAME_INSTANCE" {
+  description = "name instance ec2"
+  type        = string
+  default     = "Production"
+}
+variable "AWS_VPC_ID" {
+  description = "VPC en aws"
+  type        = string
+  default     = "vpc-032d2aeec1f5d99de"
+}
+
+variable "URL_DISK_EFS" {
+  description = "disk efs"
+  type        = string
+  default     = "fs-074a9374f12b6ec00.efs.us-east-1.amazonaws.com"
+}
+
+variable "PUBLIC_KEY_LOCATION" {
+  description = "public key ssh location"
+  type        = string
+  default     = "~/.ssh/terraform.pub"
+}
 variable "PRIVATE_KEY_LOCATION" {
   description = "key location ssh"
   type        = string
   default     = "~/.ssh/terraform"
 }
+
+variable "DOCKER_NETWORK_NAME" {
+  description = "DOCKER_NETWORK_NAME"
+  type        = string
+  default     = "app"
+}
+variable "DOCKER_FRONT_CONTAINER_NAME" {
+  description = "DOCKER_FRONT_CONTAINER_NAME"
+  type        = string
+  default     = "front-prod"
+}
+
 variable "GITHUB_USER" {
   description = "usuario de GitHub"
   type        = string
@@ -176,7 +210,7 @@ variable "FRONT_CORS" {
 }
 variable "FRONT_PORT" {
   type    = string
-  default = ""
+  default = "3131"
 }
 variable "FRONT_API_VERSION" {
   type    = string
@@ -203,7 +237,7 @@ variable "FRONT_SERVER_CERT_SSH" {
   default = ""
 }
 
-variable "AWS_IP_STG" {
+variable "AWS_IP" {
   type    = string
   default = ""
 }
@@ -214,7 +248,7 @@ variable "AWS_VOLUME" {
 }
 
 # Asume que ya tienes una Elastic IP existente con ID "eipalloc-xxxxxxxx"
-variable "AWS_IP_STG_EIPALLOC" {
+variable "AWS_IP_EIPALLOC" {
   type    = string
   default = "eipalloc-xxxxxxxx" # Coloca aquí tu EIP ID
 }

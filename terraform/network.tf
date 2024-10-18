@@ -69,11 +69,20 @@ resource "aws_security_group" "ssh_access" {
   }
 
   ingress {
-    description = "Allow HTTP"
+    description = "Allow HTTPS"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  ingress {
+    description = "Allow NFS traffic from within VPC"
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+    # cidr_blocks = ["0.0.0.0/0"] cualquier rango ip
+    cidr_blocks = ["10.0.0.0/16"] # solo internas de amazon ( Común de VPC /16 )
   }
 
   egress {

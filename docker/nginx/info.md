@@ -40,3 +40,25 @@ docker run -it --rm --link front-stg:front-stg -d -p 80:80 -p 443:443 --name pro
 
 # template y remplazo en archivos
 sed -e "s/my_valor/bello calidad/g" f.txt > t.txt
+
+
+# Cambiar el Docker Root Directory a EFS
+El directorio raíz de Docker (donde guarda imágenes, contenedores y volúmenes) por defecto está en /var/lib/docker. Puedes cambiar esta ubicación para que utilice el volumen EFS.
+
+sudo systemctl stop docker
+sudo mkdir -p /mnt/efs/docker
+
+Configura Docker para usar este nuevo directorio como su raíz. Edita el archivo de configuración de Docker (/etc/docker/daemon.json) para especificar el nuevo data-root:
+    sudo nano /etc/docker/daemon.json
+    {
+    "data-root": "/mnt/efs/docker"
+    }
+
+Mueve los datos existentes de Docker al nuevo directorio en EFS:
+    sudo rsync -aP /var/lib/docker/ /mnt/efs/docker/
+
+Reinicia Docker:
+    sudo systemctl start docker
+
+# Opción 2: Montar Volúmenes de Docker en EFS
+    docker run -v /mnt/efs/app-data:/app-data my-container

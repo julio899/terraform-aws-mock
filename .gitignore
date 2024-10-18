@@ -7,6 +7,7 @@ terraform.tfstate*
 run.sh
 **/run.sh
 **/env.tfvars
+**/*.tfvars
 **.terraform.tfstate.lock.info
 errors.log
 **.pem
