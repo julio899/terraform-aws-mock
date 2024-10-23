@@ -8,23 +8,21 @@ resource "aws_iam_instance_profile" "ec2_profile_prod" {
 
 # add key
 resource "aws_key_pair" "production_key" {
-  key_name = "production_key"
-  public_key      = file(var.PUBLIC_KEY_LOCATION)
+  key_name   = "production_key"
+  public_key = file(var.PUBLIC_KEY_LOCATION)
 }
 
 
 # Recurso de instancia EC2
 resource "aws_instance" "prod" {
-  ami           = var.AMI  # ID de la AMI, debes cambiarla por una válida
+  ami           = var.AMI # ID de la AMI, debes cambiarla por una válida
   instance_type = var.INSTANCE
-  
-  subnet_id              = "subnet-07551ce4ba24b4034"
+
+  subnet_id= "subnet-07551ce4ba24b4034"
   vpc_security_group_ids = ["sg-01856bcf88cb64341"]
 
   # Usar el perfil de instancia existente
   iam_instance_profile = aws_iam_instance_profile.ec2_profile_prod.name
-
-  # aws_iam_instance_profile.instance_profile.name
 
   # asociar llave
   key_name = aws_key_pair.production_key.key_name
@@ -33,31 +31,29 @@ resource "aws_instance" "prod" {
     Name = "Production"
   }
 
-  user_data     = <<-EOF
-                    #!/bin/bash
-                    mkdir -p /home/ubuntu/.ssh
-                    echo "${var.SSH_TERRAFORM_PUBLIC_KEY}" >> /home/ubuntu/.ssh/authorized_keys
-                    echo "deploy success..." >> /home/ubuntu/ok.txt
-                    sudo apt-get update -y
-                    # montar disco
-                    sudo apt-get install -y nfs-common
-                    sudo mkdir -p /mnt/efs
-                    nslookup ${var.URL_DISK_EFS}
-                    sudo mount -t nfs4 -o nfsvers=4.1 ${var.URL_DISK_EFS}:/ /mnt/efs
-                    # cuando se reinicie vuelva a montar el disco
-                    sudo echo "${var.URL_DISK_EFS}:/ /mnt/efs nfs4 defaults,_netdev 0 0" >> /etc/fstab
-                    echo "Deploy instance: ${var.AMI} IP: ${var.AWS_IP_EIPALLOC} ${var.INSTANCE} - $(date)" >> /mnt/efs/logs/deploys-prod.log
-                  EOF
-  
+ user_data = templatefile("install.sh", 
+    {
+    SSH_TERRAFORM_PUBLIC_KEY = var.SSH_TERRAFORM_PUBLIC_KEY
+    DOCKER_NETWORK_NAME      = var.DOCKER_NETWORK_NAME
+    URL_DISK_EFS             = var.URL_DISK_EFS
+    AWS_ACCESS_KEY_ID        = var.AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY    = var.AWS_SECRET_ACCESS_KEY
+    AWS_REGION               = var.AWS_REGION
+    AMI                      = var.AMI
+    AWS_IP_EIPALLOC          = var.AWS_IP_EIPALLOC
+    AWS_ECR_REPO_ID          = var.AWS_ECR_REPO_ID
+    INSTANCE                 = var.INSTANCE
+  })
+
   # Para asegurarte de que la instancia no elimine la VPC al hacer destroy
   lifecycle {
     ignore_changes = [
       subnet_id,
-       vpc_security_group_ids,
-       iam_instance_profile,
+      vpc_security_group_ids,
+      iam_instance_profile,
     ]
   }
-  
+
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # 
@@ -65,8 +61,7 @@ resource "aws_instance" "prod" {
 # # # # # # # # # # # # # # # # # # # # # # # 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.prod.id # ID de la instancia EC2
-  allocation_id = var.AWS_IP_EIPALLOC # IP estatica previamente creada
-  # aws_eip.elastic_ip.id # ID de la Elastic IP # in network.tf (nueva)
+  allocation_id = var.AWS_IP_EIPALLOC  # IP estatica previamente creada
   lifecycle {
     ignore_changes = [allocation_id]
   }
