@@ -24,7 +24,49 @@ echo "aws_access_key_id=${AWS_ACCESS_KEY_ID}" | tee -a /home/ubuntu/.aws/credent
 echo "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" | tee -a /home/ubuntu/.aws/credentials
 echo "region=${AWS_REGION}" | tee -a /home/ubuntu/.aws/credentials
 
-# Crear red de Docker
+echo "export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} && export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} && export AWS_DEFAULT_REGION=us-east-1 && aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 202533523551.dkr.ecr.us-east-1.amazonaws.com" >> ~/.profile
+     
+
+
+# login AWS
+ . ~/.profile
+aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_REPO_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+
+
+# check disk -> lsblk
+# crear dir de montado
+sudo mkdir -p /mnt/data
+# mount Disk SSD
+# aws ec2 attach-volume --volume-id ${AWS_VOLUME} --instance-id i-0d1353a95d920826a --device /dev/sdf 
+aws ec2 attach-volume \
+    --volume-id ${AWS_VOLUME} \
+    --instance-id ${EC2_ID} \
+    --device /dev/sdf
+
+sudo mount /dev/nvme1n1 /mnt/data 
+sudo echo '/dev/nvme1n1  /mnt/data  ext4  defaults,nofail  0  0' >> /etc/fstab
+
+# --- Logica de almacenamiento de docker --- #
+sudo mkdir -p /mnt/data/docker/data-root
+# sudo systemctl stop docker
+sudo service docker stop
+sudo systemctl disable docker.service
+sudo systemctl disable docker.socket
+sudo echo '{"data-root": "/mnt/data/docker/data-root"}' > /etc/docker/daemon.json
+#sudo rsync -aP /var/lib/docker/ "/mnt/data/docker/data-root"
+#sudo cp -rp /var/lib/docker/* "/mnt/data/docker/data-root/"
+# sudo mv /var/lib/docker /var/lib/docker.old
+# rm -rf /var/lib/docker.old
+sudo systemctl enable docker
+sudo service docker start
+
+# check space $ df -Th
+
+######################################
+# IMPORTANTE TODOS LOS CONTAINERS
+# ASIGNAR MISMA RED PARA COMUNICACION
+######################################
+# Crear red de Docker #
 sudo docker network create --driver=bridge ${DOCKER_NETWORK_NAME}
 
 # Escribir logs de despliegue
@@ -32,20 +74,70 @@ sudo mkdir -p /mnt/efs/logs
 echo "Deploy instance: ${AMI} IP: ${AWS_IP_EIPALLOC} ${INSTANCE} - $(date)" | sudo tee -a /mnt/efs/logs/deploys-prod.log
 
 
-# auxiliar
-touch /home/ubuntu/deploy.sh
-echo "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_REPO_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com" >> /home/ubuntu/deploy.sh
-echo "docker pull ${AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx_prod:latest" >> /home/ubuntu/deploy.sh
-echo "docker run --rm --net app -d -p 80:80 -p 443:443 -v /mnt/efs/prod/nginx/letsencrypt:/etc/letsencrypt -v /mnt/efs/prod/nginx/conf.d:/etc/nginx/conf.d -v /mnt/efs/prod/nginx/log/access.log:/var/log/nginx/access.log:rw -v /mnt/efs/prod/nginx/log/error.log:/var/log/nginx/error.log:rw -v /mnt/efs/prod/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -v /mnt/efs/prod/nginx/www:/usr/share/nginx/www:ro --name proxy-ng ${AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx_prod:latest" >> /home/ubuntu/deploy.sh
-chmod +x /home/ubuntu/deploy.sh
-
 aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_REPO_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+
+# sync images
 docker pull ${AWS_ECR_REPO_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/nginx_prod:latest
-docker run --rm --net app -d -p 80:80 -p 443:443 -v /mnt/efs/prod/nginx/letsencrypt:/etc/letsencrypt -v /mnt/efs/prod/nginx/conf.d:/etc/nginx/conf.d -v /mnt/efs/prod/nginx/log/access.log:/var/log/nginx/access.log:rw -v /mnt/efs/prod/nginx/log/error.log:/var/log/nginx/error.log:rw -v /mnt/efs/prod/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -v /mnt/efs/prod/nginx/www:/usr/share/nginx/www:ro --name proxy-ng ${AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx_prod:latest
 
-# p.neogaleno.com 44.214.254.160
-# mobile.neogaleno.com a 44.214.254.160
 
-# ip ***.185 stg
-# t.neogaleno.com 35.171.248.185
-# mobile-stg.neogaleno.com a 35.171.248.185
+## ------------------
+# api run container
+cd /mnt/efs/prod/git/ng-api/
+docker run -d --rm --name rabbitmq_container --network app --hostname rabbitqm -p 15672:15672 -p 5672:5672 rabbitmq:3.12-management
+docker build -f Dockerfile.prod -t api-neogaleno-prod .
+docker run -d --rm -p 4141:4141 --name api_container --network app -e RABBITMQ_HOST=rabbitmq_container api-neogaleno-prod:latest
+####### [ close module API ] #######
+## -------------------------------
+
+
+## -------------------------------
+# AI container & BD              #
+## -------------------------------
+cd /mnt/efs/prod/git/neo-ai-api/
+docker build -t neo-ai-app .
+# run posgresql 
+docker run --rm --net app --name postgresql-prod \
+   -p 5432:5432 \
+   -e POSTGRES_USER=ai \
+   -e POSTGRES_PASSWORD=neogaleno \
+   -e POSTGRES_DB=neo_ai_db \
+   -e TZ=America/Mexico_City \
+   -v /mnt/efs/prod/postgres:/var/lib/postgresql/data \
+   -d postgres
+
+####### app python docker #######
+docker run --rm --net app -d --name ai-prod \
+   -v  /mnt/efs/prod/git/neo-ai-api/.env.prod:/app/.env \
+   -p 8000:8000 \
+   neo-ai-app
+####### [ close module AI ] #######
+## -------------------------------
+
+
+# FRONT
+cd /mnt/efs/prod/git/ng-front
+docker-compose -f docker-compose-prod.yml up -d
+
+
+# Proxy with certbot
+docker run --rm --net app -d -p 80:80 -p 443:443 \
+     -v /mnt/efs/prod/nginx/create-nginx-config-static.sh:/usr/local/sbin/create-nginx-config-static \
+     -v /mnt/efs/prod/nginx/templates:/etc/nginx/templates:ro \
+     -v /mnt/efs/prod/nginx/letsencrypt:/etc/letsencrypt \
+     -v /mnt/efs/prod/nginx/conf.d:/etc/nginx/conf.d \
+     -v /mnt/efs/prod/nginx/log/access.log:/var/log/nginx/access.log:rw \
+     -v /mnt/efs/prod/nginx/log/error.log:/var/log/nginx/error.log:rw \
+     -v /mnt/efs/prod/nginx/nginx.conf:/etc/nginx/nginx.conf:rw \
+     -v /mnt/efs/prod/nginx/www:/usr/share/nginx/www:rw \
+     --name proxy-ng ${AWS_ECR_REPO_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/nginx_prod:latest
+
+   #   docker run --rm --net app -d -p 80:80 -p 443:443 \
+   #  -v /mnt/efs/prod/nginx/create-nginx-config-static.sh:/usr/local/sbin/create-nginx-config-static \
+   #  -v /mnt/efs/prod/nginx/templates:/etc/nginx/templates:ro \
+   #  -v /mnt/efs/prod/nginx/letsencrypt:/etc/letsencrypt \
+   #  -v /mnt/efs/prod/nginx/conf.d:/etc/nginx/conf.d \
+   #  -v /mnt/efs/prod/nginx/log/access.log:/var/log/nginx/access.log:rw \
+   #  -v /mnt/efs/prod/nginx/log/error.log:/var/log/nginx/error.log:rw \
+   #  -v /mnt/efs/prod/nginx/nginx.conf:/etc/nginx/nginx.conf:rw \
+   #  -v /mnt/efs/prod/nginx/www:/usr/share/nginx/www:rw \
+   #  --name proxy-ng ${AWS_ECR_REPO_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx_prod:latest
