@@ -13,3 +13,4 @@ errors.log
 **.pem
 docker/nginx/letsencrypt/live/
 **.tar.gz
+**/comands

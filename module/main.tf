@@ -90,7 +90,7 @@ resource "null_resource" "config_ec2" {
       "echo '${local.processed_user_data}' > /tmp/install.sh",
       "echo '${local.processed_user_data}' > /home/ubuntu/deploy.sh",
       "chmod +x /tmp/install.sh",
-      "chmod +x /home/ubuntu/deploy.sh",
+      # "chmod +x /home/ubuntu/deploy.sh",
       # "sudo /tmp/install.sh"
     ]
 
